@@ -1,0 +1,41 @@
+{% macro render(track) %}
+<article class="track-card">
+  <div>
+    {% if track.image %}
+    <img
+      src="{{ track.image }}"
+      alt="Album art for {{ track.album or 'Unknown album' }}"
+      class="track-artwork"
+      loading="lazy"
+    />
+    {% else %}
+    <div class="track-artwork d-flex align-items-center justify-content-center text-muted">♪</div>
+    {% endif %}
+  </div>
+  <div>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+      <h3 class="h5 mb-0">{{ track.name }}</h3>
+      {% if track.nowPlaying %}<span class="badge badge-live">Now playing</span>{% endif %}
+    </div>
+    <div class="track-meta mb-2">
+      <div><strong>{{ track.artist }}</strong></div>
+      <div>{{ track.album or "Unknown record" }}</div>
+    </div>
+    <div class="track-meta d-flex flex-wrap gap-3 align-items-center">
+      {% if track.uts %}
+      <span>
+        {{ track.uts | formatTrackTime(page.lang or 'en') }}
+        <span class="text-secondary">· {{ track.uts | relativeTime(page.lang or 'en') }}</span>
+      </span>
+      {% elseif track.nowPlaying %}
+      <span>Scrobbling live right now</span>
+      {% endif %}
+      {% if track.url %}
+      <a class="link-light link-underline-opacity-0" href="{{ track.url }}" target="_blank" rel="noopener">
+        View on Last.fm
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endmacro %}

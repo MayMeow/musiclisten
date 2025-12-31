@@ -1,0 +1,59 @@
+---
+layout: layouts/base.njk
+title: Listening Log · Last.fm
+description: Snapshot of the music I've spun lately via Last.fm
+---
+{% import "components/track-card.njk" as trackCard %}
+
+<section class="py-5">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-7">
+      <p class="text-uppercase text-secondary fw-semibold mb-2">Live listening log</p>
+      <h1 class="hero-title mb-3">Soundtrack of the moment</h1>
+      <p class="hero-subtitle">
+        Pulled directly from Last.fm for {{ lastfm.username or "my profile" }} and cached every
+        {{ lastfm.cache.ttlMinutes }} minutes to stay fresh without spamming the API.
+      </p>
+      <div class="cache-pill mt-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 5a7 7 0 1 0 4.95 11.95l1.41 1.41A9 9 0 1 1 21 12h-2a7 7 0 0 0-7-7zm7 7a7 7 0 0 1-7 7v-2a5 5 0 0 0 5-5h2z"
+          />
+        </svg>
+        {% if lastfm.cache.updated %}
+        Updated {{ lastfm.cache.updated | formatCacheTime(page.lang or 'en') }} ·
+        {% endif %}
+        TTL {{ lastfm.cache.ttlMinutes }}m
+      </div>
+      {% if lastfm.cache.warning %}
+      <div class="alert alert-warning bg-opacity-25 border-0 text-warning-emphasis mt-4" role="alert">
+        {{ lastfm.cache.warning }}
+      </div>
+      {% endif %}
+      {% if lastfm.error %}
+      <div class="alert alert-danger mt-4" role="alert">
+        {{ lastfm.error }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="pb-5">
+  <div class="row g-4">
+    {% if lastfm.tracks and lastfm.tracks | length %}
+      {% for track in lastfm.tracks %}
+      <div class="col-12 col-md-6">
+        {{ trackCard.render(track) | safe }}
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="col-12">
+      <div class="p-4 border rounded-4 border-light-subtle bg-dark bg-opacity-25">
+        <p class="mb-1 fw-semibold">No scrobbles yet</p>
+        <p class="mb-0 text-secondary">Add your Last.fm API key and username to .env, then rebuild.</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>

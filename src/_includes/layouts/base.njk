@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title or "Listening Log" }}</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <main>{{ content | safe }}</main>
+      <footer class="text-center small">
+        Built with ❤️ using Eleventy, a custom Bootstrap build, and the Last.fm API.
+      </footer>
+    </div>
+    <script src="/assets/js/bootstrap.bundle.min.js" defer></script>
+  </body>
+</html>

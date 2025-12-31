@@ -1,0 +1,31 @@
+{
+  "name": "musiclisten",
+  "version": "1.0.0",
+  "description": "Eleventy site that highlights my recent Last.fm listening history",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "sass src/styles/main.scss:src/assets/css/main.css --load-path=node_modules --style=compressed",
+    "watch:css": "sass --watch src/styles/main.scss:src/assets/css/main.css --load-path=node_modules",
+    "build:site": "eleventy",
+    "build": "npm run build:css && npm run build:site",
+    "serve": "npm run build:css && eleventy --serve",
+    "clean": "rm -rf dist .cache"
+  },
+  "keywords": [
+    "eleventy",
+    "last.fm",
+    "bootstrap"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "bootstrap": "^5.3.8",
+    "sass": "^1.97.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "luxon": "^3.7.2"
+  }
+}
