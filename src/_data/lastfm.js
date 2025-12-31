@@ -2,12 +2,15 @@ const fs = require("fs");
 const path = require("path");
 const { DateTime } = require("luxon");
 require("dotenv").config();
+const {
+  DEFAULT_TTL_MINUTES,
+  validateEnv,
+  normalizeTrack,
+  fetchRecentTracks,
+} = require("../../lib/lastfm");
 
 const CACHE_DIR = path.join(process.cwd(), ".cache");
 const CACHE_FILE = path.join(CACHE_DIR, "lastfm.json");
-const DEFAULT_TTL_MINUTES = 15;
-
-const REQUIRED_ENV = ["LASTFM_API_KEY", "LASTFM_USERNAME"];
 
 function ensureCacheDir() {
   if (!fs.existsSync(CACHE_DIR)) {
@@ -47,52 +50,6 @@ function cacheIsFresh(cache, ttlMinutes) {
   return ageMinutes < ttlMinutes;
 }
 
-function validateEnv() {
-  const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
-
-  if (missing.length) {
-    throw new Error(
-      `Missing Last.fm configuration: ${missing.join(", ")}. Check your .env file.`
-    );
-  }
-}
-
-function normalizeTrack(track) {
-  const primaryImage = Array.isArray(track.image)
-    ? [...track.image].reverse().find((img) => img?.["#text"])
-    : null;
-
-  return {
-    name: track.name,
-    artist: track.artist?.["#text"],
-    album: track.album?.["#text"],
-    url: track.url,
-    image: primaryImage?.["#text"] || null,
-    nowPlaying: track["@attr"]?.nowplaying === "true",
-    uts: track.date?.uts ? Number(track.date.uts) : null,
-    playedAt:
-      track.date?.uts
-        ? DateTime.fromSeconds(Number(track.date.uts), { zone: "utc" }).toISO()
-        : null,
-  };
-}
-
-async function fetchRecentTracks({ username, apiKey }) {
-  const url = new URL("https://ws.audioscrobbler.com/2.0/");
-  url.searchParams.set("method", "user.getrecenttracks");
-  url.searchParams.set("user", username);
-  url.searchParams.set("api_key", apiKey);
-  url.searchParams.set("format", "json");
-  url.searchParams.set("limit", "20");
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Last.fm request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
-}
 
 function buildPayload({ tracks, username, ttlMinutes }) {
   const normalized = tracks.map(normalizeTrack);

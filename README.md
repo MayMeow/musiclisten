@@ -28,6 +28,7 @@ A small Eleventy site that compiles a bespoke Bootstrap theme, fetches your rece
 | `LASTFM_API_KEY` | API key you receive from the Last.fm developer console. |
 | `LASTFM_USERNAME` | The Last.fm username (profile slug) whose listening history should be fetched. |
 | `LASTFM_CACHE_MINUTES` | Optional override for the cache TTL. Defaults to 15 minutes. |
+| `LASTFM_HISTORY_PAGES` | Number of Last.fm pages (200 tracks each) to fetch for the history archive. Defaults to 5. |
 
 ### Getting your Last.fm API key & username
 1. Sign in (or register) at [Last.fm](https://www.last.fm/).
@@ -52,6 +53,11 @@ Keep the `.env` file out of version control (already covered via `.gitignore`).
 - If the cache is fresher than `LASTFM_CACHE_MINUTES`, the cached payload is used to avoid another HTTP request.
 - When the cache is stale (or missing) the build fetches `user.getrecenttracks` from the Last.fm REST API, normalizes the response, saves it to `.cache/lastfm.json`, and exposes it to templates.
 - Any API failures fall back to the last good cache (if present) and emit a warning banner in the UI.
+- `_data/history.js` performs a multi-page fetch (up to `LASTFM_HISTORY_PAGES` × 200 tracks) to build the `/history/` archive, storing the expanded payload in `.cache/history.json` with the same TTL behavior.
+
+## History page
+- `src/history.njk` renders a table-style archive that can include up to 1,000 tracks out of the box (5 pages × 200). Increase `LASTFM_HISTORY_PAGES` if you want to go deeper, keeping in mind the trade-off between build time and API rate limits.
+- The navigation in `layouts/base.njk` now links to the new page so you can jump between the live dashboard and the archive.
 
 ## Custom Bootstrap build
 - `src/styles/main.scss` imports Bootstrap’s Sass entrypoint with custom color, typography, and layout tweaks.

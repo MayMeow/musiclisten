@@ -1,0 +1,98 @@
+---
+layout: layouts/base.njk
+title: Complete Listening History · Last.fm
+description: A deeper archive of every scrobble pulled from Last.fm
+permalink: /history/index.html
+---
+<section class="py-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-7">
+      <p class="text-uppercase text-secondary fw-semibold mb-2">Long-form archive</p>
+      <h1 class="hero-title mb-3">Every scrobble, preserved</h1>
+      <p class="hero-subtitle">
+        This page pulls up to {{ history.pageLimit * history.tracksPerPage }} items from the Last.fm
+        API ({{ history.pageLimit }} page{% if history.pageLimit > 1 %}s{% endif %},
+        {{ history.tracksPerPage }} tracks per page) and caches the result locally so you can browse a
+        deeper history without hammering their servers.
+      </p>
+      <div class="d-flex flex-wrap gap-3 mt-4">
+        <div class="cache-pill">
+          Total entries · {{ history.total }}
+        </div>
+        <div class="cache-pill">
+          {% if history.cache.updated %}
+          Updated {{ history.cache.updated | formatCacheTime(page.lang or 'en') }} ·
+          {% endif %}
+          TTL {{ history.cache.ttlMinutes }}m
+        </div>
+      </div>
+      <div class="mt-4 d-flex flex-wrap gap-3">
+        <a class="btn btn-primary" href="/">Back to now playing</a>
+        {% if history.username %}
+        <a
+          class="btn btn-outline-light"
+          href="https://www.last.fm/user/{{ history.username }}"
+          target="_blank"
+          rel="noopener"
+        >
+          View profile on Last.fm
+        </a>
+        {% endif %}
+      </div>
+      {% if history.cache.warning %}
+      <div class="alert alert-warning bg-opacity-25 border-0 text-warning-emphasis mt-4" role="alert">
+        {{ history.cache.warning }}
+      </div>
+      {% endif %}
+      {% if history.error %}
+      <div class="alert alert-danger mt-4" role="alert">
+        {{ history.error }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="pb-5">
+  {% if history.tracks and history.tracks | length %}
+  <div class="table-responsive history-table-wrapper">
+    <table class="table table-dark table-hover align-middle history-table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Track</th>
+          <th scope="col">Artist</th>
+          <th scope="col" class="d-none d-md-table-cell">Album</th>
+          <th scope="col">Played</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for track in history.tracks %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            <div class="fw-semibold">{{ track.name }}</div>
+            {% if track.url %}
+            <a class="link-light link-underline-opacity-0 small" href="{{ track.url }}" target="_blank" rel="noopener">
+              Last.fm entry
+            </a>
+            {% endif %}
+          </td>
+          <td>{{ track.artist }}</td>
+          <td class="d-none d-md-table-cell">{{ track.album or "—" }}</td>
+          <td>
+            <div>{{ track.uts | formatTrackTime(page.lang or 'en') }}</div>
+            <div class="text-secondary small">{{ track.uts | relativeTime(page.lang or 'en') }}</div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="p-4 border rounded-4 border-light-subtle bg-dark bg-opacity-25">
+    <p class="mb-1 fw-semibold">History unavailable</p>
+    <p class="mb-0 text-secondary">Once Last.fm credentials are set the archive will populate here.</p>
+  </div>
+  {% endif %}
+</section>
