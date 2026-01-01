@@ -22,6 +22,23 @@ A small Eleventy site that compiles a bespoke Bootstrap theme, fetches your rece
    npm run serve
    ```
 
+## Docker / Coolify deployment
+Use the provided `Dockerfile` to build a static image that serves the `dist/` folder with NGINX. Because Eleventy fetches data during the build, you must pass the required Last.fm variables as build arguments (Coolify exposes a UI for this).
+
+```sh
+docker build \
+   --build-arg LASTFM_API_KEY=yourkey \
+   --build-arg LASTFM_USERNAME=yourname \
+   --build-arg LASTFM_CACHE_MINUTES=60 \
+   --build-arg LASTFM_HISTORY_PAGES=5 \
+   --build-arg SITE_TITLE="Musiclisten" \
+   -t musiclisten .
+
+docker run -p 8080:80 musiclisten
+```
+
+Rebuild the image whenever you want to refresh cached data. If you prefer not to bake secrets into the image, use a BuildKit secret or trigger the build inside Coolify where the args remain server-side.
+
 ## Environment variables
 | Key | Description |
 | --- | --- |
@@ -54,7 +71,6 @@ Keep the `.env` file out of version control (already covered via `.gitignore`).
 - If the cache is fresher than `LASTFM_CACHE_MINUTES`, the cached payload is used to avoid another HTTP request.
 - When the cache is stale (or missing) the build fetches `user.getrecenttracks` from the Last.fm REST API, normalizes the response, saves it to `.cache/lastfm.json`, and exposes it to templates.
 - Any API failures fall back to the last good cache (if present) and emit a warning banner in the UI.
-- `_data/history.js` performs a multi-page fetch (up to `LASTFM_HISTORY_PAGES` × 200 tracks) to build the `/history/` archive, storing the expanded payload in `.cache/history.json` with the same TTL behavior.
 - `_data/history.js` performs a multi-page fetch (up to `LASTFM_HISTORY_PAGES` × 200 tracks) to build the `/history/` archive, storing the expanded payload in `.cache/history.json` with the same TTL behavior.
 - `_data/topAlbums.js` hits `user.gettopalbums` with a `1month` period and caches the top 10 albums in `.cache/top-albums.json` so the leaderboard page stays responsive.
 
