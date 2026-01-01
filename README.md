@@ -39,6 +39,22 @@ docker run -p 8080:80 musiclisten
 
 Rebuild the image whenever you want to refresh cached data. If you prefer not to bake secrets into the image, use a BuildKit secret or trigger the build inside Coolify where the args remain server-side.
 
+## Hourly rebuilds on Vercel (GitHub Actions)
+Vercel’s cron feature is unavailable on the Hobby plan, so the repo ships with `.github/workflows/vercel-hourly.yml`. It triggers every hour (UTC) or on demand and simply calls a Vercel Deploy Hook.
+
+1. In your Vercel project, create a Deploy Hook (Settings → Git → Deploy Hooks). Copy the generated URL.
+2. In GitHub, go to *Settings → Secrets and variables → Actions* for this repository and add a new secret named `VERCEL_DEPLOY_HOOK` with that URL.
+3. The workflow will now run hourly, hit the hook via `curl`, and Vercel will rebuild the project using the environment variables defined in the Vercel dashboard.
+
+If you need a different cadence, adjust the cron expression in `vercel-hourly.yml`. The workflow also includes `workflow_dispatch`, so you can trigger it manually from the Actions tab whenever you want a fresh deploy outside the hourly window.
+
+## Hourly rebuilds on Coolify (GitHub Actions)
+Coolify deploy hooks require an authenticated request, so `.github/workflows/coolify-hourly.yml` makes the same hourly call but adds a Bearer token header.
+
+1. In Coolify, open the service → Deployments → Deploy Hooks, generate a hook URL, and note the accompanying API token (or create a PAT with deploy permission).
+2. In GitHub Actions secrets, add `COOLIFY_DEPLOY_HOOK` (the hook URL) and `COOLIFY_DEPLOY_TOKEN` (the bearer token).
+3. The workflow will run on the same `0 * * * *` schedule and POST to the hook with `Authorization: Bearer <token>`. Adjust the cron or trigger manually via `workflow_dispatch` as needed.
+
 ## Environment variables
 | Key | Description |
 | --- | --- |

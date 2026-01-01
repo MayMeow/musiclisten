@@ -1,0 +1,21 @@
+name: Hourly Vercel Rebuild
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  trigger-vercel-build:
+    name: Trigger Vercel deploy hook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call deploy hook
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK secret not configured" >&2
+            exit 1
+          fi
+          curl --fail --show-error --silent --request POST "$VERCEL_DEPLOY_HOOK"

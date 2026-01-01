@@ -1,0 +1,23 @@
+name: Hourly Coolify Rebuild
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  trigger-coolify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Coolify deployment hook
+        env:
+          COOLIFY_DEPLOY_HOOK: ${{ secrets.COOLIFY_DEPLOY_HOOK }}
+          COOLIFY_DEPLOY_TOKEN: ${{ secrets.COOLIFY_DEPLOY_TOKEN }}
+        run: |
+          if [ -z "$COOLIFY_DEPLOY_HOOK" ] || [ -z "$COOLIFY_DEPLOY_TOKEN" ]; then
+            echo "Coolify hook or token secret is missing" >&2
+            exit 1
+          fi
+          curl --fail --show-error --silent \
+            -H "Authorization: Bearer $COOLIFY_DEPLOY_TOKEN" \
+            -X POST "$COOLIFY_DEPLOY_HOOK"
