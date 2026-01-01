@@ -12,7 +12,7 @@ const {
 const CACHE_DIR = path.join(process.cwd(), ".cache");
 const CACHE_FILE = path.join(CACHE_DIR, "history.json");
 const TRACKS_PER_PAGE = 200; // Last.fm API maximum
-const DEFAULT_PAGE_LIMIT = 5;
+const DEFAULT_PAGE_LIMIT = 1;
 
 function ensureCacheDir() {
   if (!fs.existsSync(CACHE_DIR)) {

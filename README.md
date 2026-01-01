@@ -25,10 +25,11 @@ A small Eleventy site that compiles a bespoke Bootstrap theme, fetches your rece
 ## Environment variables
 | Key | Description |
 | --- | --- |
+| `SITE_TITLE` | Title of your page |
 | `LASTFM_API_KEY` | API key you receive from the Last.fm developer console. |
 | `LASTFM_USERNAME` | The Last.fm username (profile slug) whose listening history should be fetched. |
 | `LASTFM_CACHE_MINUTES` | Optional override for the cache TTL. Defaults to 15 minutes. |
-| `LASTFM_HISTORY_PAGES` | Number of Last.fm pages (200 tracks each) to fetch for the history archive. Defaults to 5. |
+| `LASTFM_HISTORY_PAGES` | Number of Last.fm pages (200 tracks each) to fetch for the history archive. Defaults to 1. |
 
 ### Getting your Last.fm API key & username
 1. Sign in (or register) at [Last.fm](https://www.last.fm/).
