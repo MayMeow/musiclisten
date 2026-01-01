@@ -1,6 +1,6 @@
 {
   "name": "musiclisten",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Eleventy site that highlights my recent Last.fm listening history",
   "main": "index.js",
   "scripts": {
