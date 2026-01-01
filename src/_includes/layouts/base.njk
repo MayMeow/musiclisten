@@ -15,10 +15,16 @@
     <div class="container">
       {% set currentUrl = page.url or '/' %}
       {% set onHistory = currentUrl and currentUrl.startsWith('/history') %}
+      {% set onTopAlbums = currentUrl and currentUrl.startsWith('/top-albums') %}
       <header class="site-nav">
         <a class="site-brand" href="/">music.maymeow.dev</a>
         <nav class="site-links">
-          <a class="nav-link{% if not onHistory %} active{% endif %}" href="/">Now Playing</a>
+          <a class="nav-link{% if not onHistory and not onTopAlbums %} active{% endif %}" href="/">
+            Now Playing
+          </a>
+          <a class="nav-link{% if onTopAlbums %} active{% endif %}" href="/top-albums/">
+            Top albums
+          </a>
           <a class="nav-link{% if onHistory %} active{% endif %}" href="/history/">All History</a>
         </nav>
       </header>

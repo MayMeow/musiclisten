@@ -1,0 +1,20 @@
+{% macro render(album, rank) %}
+<article class="album-card">
+  <div class="album-rank">#{{ rank }}</div>
+  <div class="album-art">
+    {% if album.image %}
+    <img src="{{ album.image }}" alt="Cover art for {{ album.name }}" loading="lazy" />
+    {% else %}
+    <div class="album-art__placeholder">♪</div>
+    {% endif %}
+  </div>
+  <div class="album-content">
+    <div class="album-title">{{ album.name }}</div>
+    <div class="album-artist text-secondary">{{ album.artist }}</div>
+    <div class="album-plays">{{ album.playcount }} plays last month</div>
+    {% if album.url %}
+    <a class="album-link" href="{{ album.url }}" target="_blank" rel="noopener">View on Last.fm</a>
+    {% endif %}
+  </div>
+</article>
+{% endmacro %}

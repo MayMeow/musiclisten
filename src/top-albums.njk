@@ -1,0 +1,58 @@
+---
+layout: layouts/base.njk
+title: Top 10 Albums · Last Month
+description: A monthly snapshot of the albums I've rinsed the most.
+permalink: /top-albums/index.html
+---
+{% import "components/album-card.njk" as albumCard %}
+
+<section class="py-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-7">
+      <p class="text-uppercase text-secondary fw-semibold mb-2">Monthly highlight</p>
+      <h1 class="hero-title mb-3">Top 10 albums from last month</h1>
+      <p class="hero-subtitle">
+        Powered by Last.fm's <em>{{ topAlbums.period }}</em> window so I can see which records
+        dominated my listening lately. Data refreshes every {{ topAlbums.cache.ttlMinutes }} minutes
+        and is cached locally to stay gentle on their API.
+      </p>
+      <div class="cache-pill mt-3">
+        {% if topAlbums.cache.updated %}
+        Updated {{ topAlbums.cache.updated | formatCacheTime(page.lang or 'en') }} ·
+        {% endif %}
+        TTL {{ topAlbums.cache.ttlMinutes }}m
+      </div>
+      {% if topAlbums.cache.warning %}
+      <div class="alert alert-warning bg-opacity-25 border-0 text-warning-emphasis mt-4" role="alert">
+        {{ topAlbums.cache.warning }}
+      </div>
+      {% endif %}
+      {% if topAlbums.error %}
+      <div class="alert alert-danger mt-4" role="alert">{{ topAlbums.error }}</div>
+      {% endif %}
+      <div class="d-flex flex-wrap gap-3 mt-4">
+        <a class="btn btn-primary" href="/">Now playing</a>
+        <a class="btn btn-outline-light" href="/history/">All history</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pb-5">
+  {% if topAlbums.albums and topAlbums.albums | length %}
+  <div class="row g-4">
+    {% for album in topAlbums.albums %}
+    <div class="col-12 col-md-6">
+      {{ albumCard.render(album, loop.index) | safe }}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="p-4 border rounded-4 border-light-subtle bg-dark bg-opacity-25">
+    <p class="mb-1 fw-semibold">No album stats yet</p>
+    <p class="mb-0 text-secondary">
+      Once your Last.fm credentials are set, rebuild to populate this monthly leaderboard.
+    </p>
+  </div>
+  {% endif %}
+</section>

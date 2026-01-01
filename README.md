@@ -54,10 +54,16 @@ Keep the `.env` file out of version control (already covered via `.gitignore`).
 - When the cache is stale (or missing) the build fetches `user.getrecenttracks` from the Last.fm REST API, normalizes the response, saves it to `.cache/lastfm.json`, and exposes it to templates.
 - Any API failures fall back to the last good cache (if present) and emit a warning banner in the UI.
 - `_data/history.js` performs a multi-page fetch (up to `LASTFM_HISTORY_PAGES` × 200 tracks) to build the `/history/` archive, storing the expanded payload in `.cache/history.json` with the same TTL behavior.
+- `_data/history.js` performs a multi-page fetch (up to `LASTFM_HISTORY_PAGES` × 200 tracks) to build the `/history/` archive, storing the expanded payload in `.cache/history.json` with the same TTL behavior.
+- `_data/topAlbums.js` hits `user.gettopalbums` with a `1month` period and caches the top 10 albums in `.cache/top-albums.json` so the leaderboard page stays responsive.
 
 ## History page
 - `src/history.njk` renders a table-style archive that can include up to 1,000 tracks out of the box (5 pages × 200). Increase `LASTFM_HISTORY_PAGES` if you want to go deeper, keeping in mind the trade-off between build time and API rate limits.
 - The navigation in `layouts/base.njk` now links to the new page so you can jump between the live dashboard and the archive.
+
+## Top albums page
+- `src/top-albums.njk` showcases the 10 most played albums from the previous month (per Last.fm’s `1month` window) with artwork, play counts, and profile links.
+- You can tweak the TTL via `LASTFM_CACHE_MINUTES` if you’d like to refresh the leaderboard more or less frequently.
 
 ## Custom Bootstrap build
 - `src/styles/main.scss` imports Bootstrap’s Sass entrypoint with custom color, typography, and layout tweaks.

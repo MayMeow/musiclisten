@@ -109,6 +109,65 @@ main {
   color: #f8f9fc;
 }
 
+.album-card {
+  background: rgba(9, 13, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  min-height: 140px;
+}
+
+.album-rank {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #ffb703;
+}
+
+.album-art img,
+.album-art__placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 1rem;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+  display: block;
+}
+
+.album-art__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(248, 249, 252, 0.6);
+  font-size: 1.5rem;
+}
+
+.album-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.album-plays {
+  color: rgba(248, 249, 252, 0.75);
+  font-size: 0.95rem;
+}
+
+.album-link {
+  font-weight: 500;
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  color: #8ecae6;
+  text-decoration: none;
+}
+
+.album-link:hover {
+  text-decoration: underline;
+}
+
 .badge-live {
   background: color.scale(#ffb703, $lightness: -8%);
   color: #0b0d16;
@@ -159,5 +218,9 @@ footer {
   .track-artwork {
     width: 100%;
     height: auto;
+  }
+
+  .album-card {
+    grid-template-columns: auto 1fr;
   }
 }
